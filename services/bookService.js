@@ -30,26 +30,22 @@ exports.updateBook = async (bookId, updateData) => {
 };
 
 exports.patchBook = async (bookId, updateData) => {
-    // Find existing book
     const book = await Book.findById(bookId);
     if (!book) throw new Error('Book not found');
 
-    // Validate only present fields
-    if (updateData.hasOwnProperty('publishedYear')) {
+    if (Object.prototype.hasOwnProperty.call(updateData, 'publishedYear')) {
         if (updateData.publishedYear > new Date().getFullYear()) {
             throw new Error('Published year cannot be in the future.');
         }
     }
-    // mongoose will validate types and required on save
 
-    // Update book object only with present fields
     Object.keys(updateData).forEach((field) => {
         book[field] = updateData[field];
     });
 
     await book.save();
     return book;
-}
+};
 
 exports.deleteBook = async (bookId) => {
     const book = await Book.findByIdAndDelete(bookId);
